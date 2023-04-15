@@ -1,6 +1,8 @@
 package com.github.githubissues.service;
 
 import com.github.githubissues.components.IssuesTasks;
+import com.github.githubissues.dto.RepositoryDto;
+import com.github.githubissues.model.Contributor;
 import com.github.githubissues.model.Issue;
 import com.github.githubissues.model.Repository;
 import com.github.githubissues.model.User;
@@ -36,6 +38,15 @@ public class IssuesService {
         this.restTemplate = new RestTemplate();
     }
 
+    public void createResponse(){
+        RepositoryDto dto = new RepositoryDto();
+        try {
+            tasks.pushIssuer(dto);
+        }catch (InterruptedException ie){
+            logger.error("Error on: " + ie);
+        }
+    }
+
 
     // TODO: change return
     public Repository findRepository(String user_id, String nome_repositorio){
@@ -46,11 +57,10 @@ public class IssuesService {
         List<Issue> issues = findIssues(user_id, nome_repositorio);
         repository.setIssues(issues);
         repository.setRepository(nome_repositorio);
-        try {
-            tasks.pushIssuer(repository);
-        }catch (InterruptedException ie){
-            logger.error("Error on: " + ie);
-        }
+
+        List<Contributor> contributors = findContributors(user_id, nome_repositorio);
+        repository.setContributors(contributors);
+
         return repository;
     }
 
@@ -74,12 +84,15 @@ public class IssuesService {
         return issuesList;
     }
 
-    public void findContributors(String user_id, String repository){
+    public List<Contributor> findContributors(String user_id, String repository){
         String url = gitRepo+user_id +
                 "/" +
                 repository +
                 "/contributors";
-
+        logger.info("Calling - " + url);
+        ResponseEntity<Contributor[]> response = restTemplate.getForEntity(url, Contributor[].class);
+        List<Contributor> contributorList = List.of(response.getBody());
+        return contributorList;
     }
 
 

@@ -1,6 +1,6 @@
 package com.github.githubissues.components;
 
-import com.github.githubissues.model.Repository;
+import com.github.githubissues.dto.RepositoryDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class IssuesTasks {
     private static final Logger logger = LoggerFactory.getLogger(IssuesTasks.class);
 
     @Async
-    public void pushIssuer(Repository repository) throws InterruptedException {
+    public void pushIssuer(RepositoryDto repository) throws InterruptedException {
         logger.info("run");
         // Artificial delay of 1s for demonstration purposes
         Thread.sleep(5000L);

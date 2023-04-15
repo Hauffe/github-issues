@@ -1,8 +1,7 @@
-package com.github.githubissues.model;
+package com.github.githubissues.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,11 +12,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Contributor {
-    private String login;
-    private String url;
-
-    @JsonProperty("contributions")
-    private Integer qtd_commits;
-
+public class IssueDto {
+//    title, author and labels
 }
