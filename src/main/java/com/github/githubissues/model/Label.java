@@ -1,9 +1,8 @@
 package com.github.githubissues.model;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-
-import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -11,8 +10,7 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class Issue {
-    private String title;
-    private User user;
-    private List<Label> labels;
+public class Label {
+    public Integer id;
+    public String name;
 }

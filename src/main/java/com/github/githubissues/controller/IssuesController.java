@@ -1,5 +1,8 @@
 package com.github.githubissues.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.githubissues.model.Repository;
 import com.github.githubissues.service.IssuesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,8 +19,11 @@ public class IssuesController {
 
     private final IssuesService service;
 
+    private ObjectMapper mapper;
+
     public IssuesController(IssuesService service) {
         this.service = service;
+        this.mapper = new ObjectMapper();
     }
 
     @RequestMapping("/about")
@@ -25,11 +31,11 @@ public class IssuesController {
         return ResponseEntity.status(HttpStatus.OK).body("Github information API (Version 1.0) created by Alexandre Hauffe");
     }
 
-    @GetMapping("/repository/{user_id}/{repository}")
+    @GetMapping("/{user_id}/{repository}")
     public ResponseEntity getRepository(
             @PathVariable String user_id,
-            @PathVariable String repository) {
-        service.findRepository(user_id, repository);
-        return new ResponseEntity<>(user_id + " " + repository, HttpStatus.OK);
+            @PathVariable String repository) throws JsonProcessingException {
+        Repository response = service.findRepository(user_id, repository);
+        return new ResponseEntity<>(mapper.writeValueAsString(response), HttpStatus.OK);
     }
 }

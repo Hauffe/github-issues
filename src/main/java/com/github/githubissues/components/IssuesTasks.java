@@ -10,11 +10,6 @@ import org.slf4j.LoggerFactory;
 @Component
 public class IssuesTasks {
 
-    @Value("${app.git_user}")
-    private String gitUser;
-
-    @Value("${app.git_repo}")
-    private String gitRepo;
 
     @Value("${app.webhook}")
     private String webhookUrl;

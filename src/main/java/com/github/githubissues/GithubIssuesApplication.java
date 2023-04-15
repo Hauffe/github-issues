@@ -22,9 +22,9 @@ public class GithubIssuesApplication {
         // max numbers of requests
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(2);
-        // Quere capacity
+        // Queue capacity
         executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("GithubLookup-");
+        executor.setThreadNamePrefix("Webhoook-");
         executor.initialize();
         return executor;
     }
