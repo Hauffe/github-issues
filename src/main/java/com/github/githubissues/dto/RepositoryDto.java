@@ -1,17 +1,13 @@
 package com.github.githubissues.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.github.githubissues.model.Contributor;
-import com.github.githubissues.model.Issue;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
 
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown=true)
 @Getter
 @Setter

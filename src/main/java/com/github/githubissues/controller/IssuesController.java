@@ -2,7 +2,7 @@ package com.github.githubissues.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.githubissues.model.Repository;
+import com.github.githubissues.dto.RepositoryDto;
 import com.github.githubissues.service.IssuesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,7 +35,7 @@ public class IssuesController {
     public ResponseEntity getRepository(
             @PathVariable String user_id,
             @PathVariable String repository) throws JsonProcessingException {
-        Repository response = service.findRepository(user_id, repository);
-        return new ResponseEntity<>(mapper.writeValueAsString(response), HttpStatus.OK);
+        ResponseEntity response = service.getRepository(user_id, repository);
+        return response;
     }
 }

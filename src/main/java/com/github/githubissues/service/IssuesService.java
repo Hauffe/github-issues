@@ -1,6 +1,8 @@
 package com.github.githubissues.service;
 
+import com.github.githubissues.builders.RepositoryBuilder;
 import com.github.githubissues.components.IssuesTasks;
+import com.github.githubissues.components.UrlCaller;
 import com.github.githubissues.dto.RepositoryDto;
 import com.github.githubissues.model.Contributor;
 import com.github.githubissues.model.Issue;
@@ -10,15 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
 @Service
 public class IssuesService {
-
 
     @Value("${app.git_user}")
     private String gitUser;
@@ -28,18 +31,21 @@ public class IssuesService {
 
     private IssuesTasks tasks;
 
-    private RestTemplate restTemplate;
+    private UrlCaller urlCaller;
+
+    private RepositoryBuilder builder;
 
     private static final Logger logger = LoggerFactory.getLogger(IssuesService.class);
 
     @Autowired
-    public IssuesService(IssuesTasks tasks) {
+    public IssuesService(UrlCaller urlCaller, IssuesTasks tasks, RepositoryBuilder builder) {
         this.tasks = tasks;
-        this.restTemplate = new RestTemplate();
+        this.urlCaller = urlCaller;
+        this.builder = builder;
+
     }
 
-    public void createResponse(){
-        RepositoryDto dto = new RepositoryDto();
+    public void createResponse(RepositoryDto dto){
         try {
             tasks.pushIssuer(dto);
         }catch (InterruptedException ie){
@@ -49,49 +55,42 @@ public class IssuesService {
 
 
     // TODO: change return
-    public Repository findRepository(String user_id, String nome_repositorio){
-        Repository repository = new Repository();
-        User user = findUser(user_id);
-        repository.setUser(user.getName());
-
-        List<Issue> issues = findIssues(user_id, nome_repositorio);
-        repository.setIssues(issues);
-        repository.setRepository(nome_repositorio);
-
-        List<Contributor> contributors = findContributors(user_id, nome_repositorio);
-        repository.setContributors(contributors);
-
-        return repository;
+    public ResponseEntity getRepository(String user_id, String nome_repositorio){
+        User user = getUser(user_id);
+        List<Issue> issues = getIssues(user_id, nome_repositorio);
+        List<Contributor> contributors = getContributors(user_id, nome_repositorio);
+        builder.setUser(user);
+        builder.setRepository(nome_repositorio);
+        builder.setIssues(issues);
+        builder.setContributors(contributors);
+        createResponse(builder.repositoryDto());
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     //TODO: validate null return
-    public User findUser(String user_id){
-        String url = gitUser+user_id;
-        logger.info("Calling - " + url);
-        User user = restTemplate.getForObject(url, User.class);
+    public User getUser(String user_id){
+        String url = gitUser+user_id;;
+        User user = (User)urlCaller.getObject(url, User.class);
         return user;
     }
 
     //TODO: validate null return
-    public List<Issue> findIssues(String user_id, String repository){
+    public List<Issue> getIssues(String user_id, String repository){
         String url = gitRepo+user_id +
                 "/" +
                 repository +
                 "/issues";
-        logger.info("Calling - " + url);
-        ResponseEntity<Issue[]> response = restTemplate.getForEntity(url, Issue[].class);
-        List<Issue> issuesList = List.of(response.getBody());
-        return issuesList;
+        List<Issue> list = (List<Issue>)(Object)urlCaller.getList(url, Issue[].class);
+        return list;
     }
 
-    public List<Contributor> findContributors(String user_id, String repository){
+    //TODO: validate null return
+    public List<Contributor> getContributors(String user_id, String repository){
         String url = gitRepo+user_id +
                 "/" +
                 repository +
                 "/contributors";
-        logger.info("Calling - " + url);
-        ResponseEntity<Contributor[]> response = restTemplate.getForEntity(url, Contributor[].class);
-        List<Contributor> contributorList = List.of(response.getBody());
+        List<Contributor> contributorList = (List<Contributor>)(Object)urlCaller.getList(url, Contributor[].class);
         return contributorList;
     }
 
