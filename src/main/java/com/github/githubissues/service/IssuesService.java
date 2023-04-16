@@ -6,15 +6,12 @@ import com.github.githubissues.components.UrlCaller;
 import com.github.githubissues.dto.RepositoryDto;
 import com.github.githubissues.model.Contributor;
 import com.github.githubissues.model.Issue;
-import com.github.githubissues.model.Repository;
 import com.github.githubissues.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

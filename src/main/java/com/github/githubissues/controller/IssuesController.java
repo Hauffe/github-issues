@@ -34,7 +34,7 @@ public class IssuesController {
     @GetMapping("/{user_id}/{repository}")
     public ResponseEntity getRepository(
             @PathVariable String user_id,
-            @PathVariable String repository) throws JsonProcessingException {
+            @PathVariable String repository){
         ResponseEntity response = service.getRepository(user_id, repository);
         return response;
     }

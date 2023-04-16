@@ -1,9 +1,11 @@
 package com.github.githubissues.components;
 
+import com.github.githubissues.dto.RepositoryDto;
 import com.github.githubissues.service.IssuesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -34,6 +36,16 @@ public class UrlCaller {
         ResponseEntity<Object[]> response = restTemplate.getForEntity(url, className);
         List<Object> objectList = List.of(response.getBody());
         return objectList;
+    }
+
+    public void post(String url, Object object){
+        logger.info("POST to - " + url);
+        ResponseEntity response = restTemplate.postForEntity(url, object, String.class);
+        if(response.getStatusCode() != HttpStatus.OK){
+            logger.error("Unable to POST - " + response);
+        }else{
+            logger.info("Request sent to " + url);
+        }
     }
 
 }

@@ -45,16 +45,16 @@ public class RepositoryBuilder implements Builder{
     @Override
     public void setContributors(List<Contributor> contributors) {
         this.contributors.clear();
-        for(Contributor contributor: contributors){
+        contributors.forEach(contributor -> {
             User user = (User) urlCaller.getObject(contributor.getUrl(), User.class);
             this.contributors.add(
-              new ContributorDto(
-                      user.getName(),
-                      contributor.getLogin(),
-                      contributor.getQtd_commits()
-              )
+                    new ContributorDto(
+                            user.getName(),
+                            contributor.getLogin(),
+                            contributor.getQtd_commits()
+                    )
             );
-        }
+        });
     }
 
     @Override
