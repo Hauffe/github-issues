@@ -3,7 +3,6 @@ package com.github.githubissues.components;
 import com.github.githubissues.dto.RepositoryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;

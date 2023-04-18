@@ -2,18 +2,17 @@ package com.github.githubissues.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
-@NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown=true)
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Repository {
     @JsonAlias("user_id")
     private String user;

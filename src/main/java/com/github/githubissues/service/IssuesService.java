@@ -64,24 +64,21 @@ public class IssuesService {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    //TODO: validate null return
     public User getUser(String user_id){
         String url = gitUser+user_id;;
         User user = (User)urlCaller.getObject(url, User.class);
         return user;
     }
 
-    //TODO: validate null return
     public List<Issue> getIssues(String user_id, String repository){
         String url = gitRepo+user_id +
                 "/" +
                 repository +
                 "/issues";
-        List<Issue> list = (List<Issue>)(Object)urlCaller.getList(url, Issue[].class);
-        return list;
+        Object obj = urlCaller.getList(url, Issue[].class);
+        return (List<Issue>)obj;
     }
 
-    //TODO: validate null return
     public List<Contributor> getContributors(String user_id, String repository){
         String url = gitRepo+user_id +
                 "/" +
@@ -90,7 +87,4 @@ public class IssuesService {
         List<Contributor> contributorList = (List<Contributor>)(Object)urlCaller.getList(url, Contributor[].class);
         return contributorList;
     }
-
-
-
 }

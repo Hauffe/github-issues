@@ -5,11 +5,12 @@ import lombok.*;
 
 import java.util.List;
 
-@NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class Issue {
     private String title;

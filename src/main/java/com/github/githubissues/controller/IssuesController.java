@@ -1,8 +1,6 @@
 package com.github.githubissues.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.githubissues.dto.RepositoryDto;
 import com.github.githubissues.service.IssuesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

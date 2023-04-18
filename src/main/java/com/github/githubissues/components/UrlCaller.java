@@ -1,6 +1,5 @@
 package com.github.githubissues.components;
 
-import com.github.githubissues.dto.RepositoryDto;
 import com.github.githubissues.service.IssuesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
