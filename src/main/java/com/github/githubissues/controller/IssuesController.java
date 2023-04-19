@@ -29,11 +29,11 @@ public class IssuesController {
         return ResponseEntity.status(HttpStatus.OK).body("Github information API (Version 1.0) created by Alexandre Hauffe");
     }
 
-    @GetMapping("/{user_id}/{repository}")
+    @GetMapping("/{userId}/{repositoryName}")
     public ResponseEntity getRepository(
-            @PathVariable String user_id,
-            @PathVariable String repository){
-        ResponseEntity response = service.getRepository(user_id, repository);
+            @PathVariable String userId,
+            @PathVariable String repositoryName){
+        ResponseEntity response = service.getRepository(userId, repositoryName);
         return response;
     }
 }

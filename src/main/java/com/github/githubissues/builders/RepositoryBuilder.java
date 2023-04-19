@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class RepositoryBuilder implements Builder{
 
     private String user;
-    private String repository;
+    private String repositoryName;
     private List<IssueDto> issues;
     private List<ContributorDto> contributors;
     private UrlCaller urlCaller;
@@ -38,8 +38,8 @@ public class RepositoryBuilder implements Builder{
     }
 
     @Override
-    public void setRepository(String repository) {
-        this.repository = repository;
+    public void setRepository(String repositoryName) {
+        this.repositoryName = repositoryName;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class RepositoryBuilder implements Builder{
                     new ContributorDto(
                             user.getName(),
                             contributor.getLogin(),
-                            contributor.getQtd_commits()
+                            contributor.getQtdCommits()
                     )
             );
         });
@@ -72,6 +72,6 @@ public class RepositoryBuilder implements Builder{
     }
 
     public RepositoryDto repositoryDto(){
-        return new RepositoryDto(user, repository, issues, contributors);
+        return new RepositoryDto(user, repositoryName, issues, contributors);
     }
 }

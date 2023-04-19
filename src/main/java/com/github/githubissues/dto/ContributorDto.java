@@ -1,7 +1,9 @@
 package com.github.githubissues.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @NoArgsConstructor
@@ -13,5 +15,7 @@ import lombok.*;
 public class ContributorDto {
     private String nome;
     private String user;
-    private Integer qtd_commits;
+
+    @JsonProperty("qtd_commits")
+    private Integer qtdCommits;
 }

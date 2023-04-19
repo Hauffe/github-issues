@@ -1,28 +1,79 @@
 package com.github.githubissues.builders;
 
+import com.github.githubissues.components.UrlCaller;
+import com.github.githubissues.controller.IssuesController;
+import com.github.githubissues.dto.RepositoryDto;
+import com.github.githubissues.model.*;
+import com.github.githubissues.service.IssuesService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class RepositoryBuilderTest {
 
-    @Test
-    void setUser() {
-    }
+    @InjectMocks
+    private RepositoryBuilder builder;
 
-    @Test
-    void setRepository() {
-    }
+    @Mock
+    private UrlCaller urlCaller;
 
-    @Test
-    void setContributors() {
-    }
 
-    @Test
-    void setIssues() {
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void repositoryDto() {
+        //Arrange
+        Repository repository = prepateRepository();
+        Mockito.when(urlCaller.getObject("url", User.class))
+                .thenReturn(prepareUser());
+
+        //Act
+        builder.setUser(prepareUser());
+        builder.setContributors(prepareContributor());
+        builder.setIssues(prepareIssues());
+        RepositoryDto dto = builder.repositoryDto();
+
+        //Assert
+        assertNotNull(dto);
+        assertEquals(repository.getUser(), dto.getUser());
+        assertEquals(repository.getIssues().get(0).getTitle(), dto.getIssues().get(0).getTitle());
+        assertEquals(repository.getContributors().get(0).getQtdCommits(), dto.getContributors().get(0).getQtdCommits());
+    }
+
+    protected User prepareUser(){
+        return new User("login", "name", "url");
+    }
+
+    protected List<Issue> prepareIssues(){
+        List<Issue> issues = new ArrayList<>();
+        List<Label> labels = new ArrayList<>();
+        labels.add(new Label(1, "bug"));
+        issues.add(new Issue("title", prepareUser(), labels));
+        return issues;
+    }
+
+    protected List<Contributor> prepareContributor(){
+        List<Contributor> contributors = new ArrayList<>();
+        contributors.add(new Contributor("login", "url", 10));
+        return contributors;
+    }
+
+    protected Repository prepateRepository(){
+        return new Repository("name", "repo", prepareIssues(), prepareContributor());
     }
 }

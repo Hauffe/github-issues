@@ -52,12 +52,12 @@ public class IssuesService {
 
 
     // TODO: change return
-    public ResponseEntity getRepository(String user_id, String nome_repositorio){
-        User user = getUser(user_id);
-        List<Issue> issues = getIssues(user_id, nome_repositorio);
-        List<Contributor> contributors = getContributors(user_id, nome_repositorio);
+    public ResponseEntity getRepository(String userId, String repositoryName){
+        User user = getUser(userId);
+        List<Issue> issues = getIssues(userId, repositoryName);
+        List<Contributor> contributors = getContributors(userId, repositoryName);
         builder.setUser(user);
-        builder.setRepository(nome_repositorio);
+        builder.setRepository(repositoryName);
         builder.setIssues(issues);
         builder.setContributors(contributors);
         createResponse(builder.repositoryDto());

@@ -26,8 +26,8 @@ public class UrlCaller {
 
     public Object getObject(String url, Class className){
         logger.info("Calling - " + url);
-        Object object = restTemplate.getForObject(url, className);
-        return object;
+        ResponseEntity response = restTemplate.getForEntity(url, className);
+        return response.getBody();
     }
 
     public List<Object> getList(String url, Class className){
@@ -46,5 +46,4 @@ public class UrlCaller {
             logger.info("Request sent to " + url);
         }
     }
-
 }

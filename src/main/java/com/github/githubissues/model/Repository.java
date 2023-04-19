@@ -16,7 +16,9 @@ import java.util.List;
 public class Repository {
     @JsonAlias("user_id")
     private String user;
-    private String repository;
+
+    @JsonAlias("repository")
+    private String repositoryName;
     private List<Issue> issues;
     private List<Contributor> contributors;
 

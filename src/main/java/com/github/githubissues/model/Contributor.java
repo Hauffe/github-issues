@@ -17,6 +17,6 @@ public class Contributor {
     private String url;
 
     @JsonProperty("contributions")
-    private Integer qtd_commits;
+    private Integer qtdCommits;
 
 }
