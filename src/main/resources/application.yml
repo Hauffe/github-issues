@@ -7,4 +7,4 @@ app:
   git_user: "https://api.github.com/users/"
   git_repo: "https://api.github.com/repos/"
   webhook: "https://webhook.site/06f5fc92-bcb7-4a37-9b7c-d86742bb44f4"
-  timeToPush: 15000
+  timeToPush: 86400

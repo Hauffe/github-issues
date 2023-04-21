@@ -20,8 +20,8 @@ public class GithubIssuesApplication {
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // max numbers of requests
-        executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(2);
+        executor.setCorePoolSize(4);
+        executor.setMaxPoolSize(4);
         // Queue capacity
         executor.setQueueCapacity(500);
         executor.setThreadNamePrefix("Webhoook-");

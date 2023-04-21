@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 public class IssuesTasks {
 
@@ -30,7 +32,7 @@ public class IssuesTasks {
     @Async
     public void pushIssuer(RepositoryDto repository) throws InterruptedException {
         logger.info("Push to remote scheduled");
-        Thread.sleep(timeToPush);
+        TimeUnit.SECONDS.sleep(timeToPush);
         urlCaller.post(webhookUrl, repository);
     }
 
