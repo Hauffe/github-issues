@@ -36,7 +36,7 @@ class RepositoryBuilderTest {
     }
 
     @Test
-    void repositoryDto() {
+    void buildRepositoryDtoSuccess() {
         //Arrange
         Repository repository = prepateRepository();
         Mockito.when(urlCaller.getObject("url", User.class))

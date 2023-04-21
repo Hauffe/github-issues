@@ -4,6 +4,8 @@ import com.github.githubissues.builders.RepositoryBuilder;
 import com.github.githubissues.components.IssuesTasks;
 import com.github.githubissues.components.UrlCaller;
 import com.github.githubissues.dto.RepositoryDto;
+import com.github.githubissues.dto.ReturnMessageDto;
+import com.github.githubissues.exceptions.RemoteItemNotFoundException;
 import com.github.githubissues.model.Contributor;
 import com.github.githubissues.model.Issue;
 import com.github.githubissues.model.User;
@@ -15,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -51,40 +55,62 @@ public class IssuesService {
     }
 
 
-    // TODO: change return
-    public ResponseEntity getRepository(String userId, String repositoryName){
+    public RepositoryDto getRepositoryDto(String userId, String repositoryName){
+        RepositoryDto dto;
         User user = getUser(userId);
-        List<Issue> issues = getIssues(userId, repositoryName);
-        List<Contributor> contributors = getContributors(userId, repositoryName);
-        builder.setUser(user);
-        builder.setRepository(repositoryName);
-        builder.setIssues(issues);
-        builder.setContributors(contributors);
-        createResponse(builder.repositoryDto());
-        return new ResponseEntity(HttpStatus.OK);
+        if(user != null){
+            List<Issue> issues = getIssues(userId, repositoryName);
+            List<Contributor> contributors = getContributors(userId, repositoryName);
+            builder.setUser(user);
+            builder.setRepository(repositoryName);
+            builder.setIssues(issues);
+            builder.setContributors(contributors);
+            dto = builder.repositoryDto();
+            createResponse(dto);
+        }else{
+            return null;
+        }
+        return dto;
     }
 
-    public User getUser(String user_id){
-        String url = gitUser+user_id;;
-        User user = (User)urlCaller.getObject(url, User.class);
+    public User getUser(String userId){
+        String url = gitUser+userId;
+        User user = null;
+        try{
+            user = (User)urlCaller.getObject(url, User.class);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
         return user;
     }
 
-    public List<Issue> getIssues(String user_id, String repository){
-        String url = gitRepo+user_id +
+    public List<Issue> getIssues(String userId, String repository){
+        List<Issue> issues = new ArrayList<>();
+        String url = gitRepo+userId +
                 "/" +
                 repository +
                 "/issues";
-        Object obj = urlCaller.getList(url, Issue[].class);
-        return (List<Issue>)obj;
+        try{
+            Object obj = urlCaller.getList(url, Issue[].class);
+            issues = (List<Issue>)obj;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return issues;
     }
 
-    public List<Contributor> getContributors(String user_id, String repository){
-        String url = gitRepo+user_id +
+    public List<Contributor> getContributors(String userId, String repository){
+        List<Contributor> contributors = new ArrayList<>();
+        String url = gitRepo+userId +
                 "/" +
                 repository +
                 "/contributors";
-        List<Contributor> contributorList = (List<Contributor>)(Object)urlCaller.getList(url, Contributor[].class);
-        return contributorList;
+        try {
+            Object obj = urlCaller.getList(url, Contributor[].class);
+            contributors = (List<Contributor>)obj;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return contributors;
     }
 }

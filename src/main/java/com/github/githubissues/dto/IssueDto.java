@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 @ToString
 public class IssueDto {
-//    title, author and labels
     private String title;
     private String author;
     private List<String> labels;

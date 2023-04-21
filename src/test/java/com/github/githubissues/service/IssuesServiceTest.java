@@ -4,6 +4,8 @@ import com.github.githubissues.builders.RepositoryBuilder;
 import com.github.githubissues.components.IssuesTasks;
 import com.github.githubissues.components.UrlCaller;
 import com.github.githubissues.controller.IssuesController;
+import com.github.githubissues.dto.RepositoryDto;
+import com.github.githubissues.exceptions.RemoteItemNotFoundException;
 import com.github.githubissues.model.*;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeAll;
@@ -44,26 +46,31 @@ class IssuesServiceTest {
     @Test
     void getRepositorySuccess() {
         //Arrange
-        ResponseEntity response = new ResponseEntity(HttpStatus.OK);
+        ReflectionTestUtils.setField(issuesService, "builder", new RepositoryBuilder(urlCaller));
+        User user = prepareUser();
         List<Issue> issues = prepareIssues();
         List<Contributor> contributors = prepareContributor();
+        Mockito.when(urlCaller.getObject("url", User.class))
+                .thenReturn(user);
         Mockito.when(issuesService.getUser("user"))
-                .thenReturn(prepareUser());
-        Mockito.when(issuesService.getIssues("user", "repository"))
+                .thenReturn(user);
+        Mockito.when(issuesService.getIssues("user", "repo"))
                 .thenReturn(issues);
-        Mockito.when(issuesService.getContributors("user", "repository"))
+        Mockito.when(issuesService.getContributors("user", "repo"))
                 .thenReturn(contributors);
 
         //Act
-        var responseEntity = issuesService.getRepository("user", "repo");
+        RepositoryDto response = issuesService.getRepositoryDto("user", "repo");
 
         //Assert
         assertNotNull(response);
-        assertEquals(ResponseEntity.ok().build().getStatusCode(), responseEntity.getStatusCode());
+        assertEquals("name", response.getUser());
+        assertEquals(issues.get(0).getTitle(), response.getIssues().get(0).getTitle());
+        assertEquals(contributors.get(0).getQtdCommits(), response.getContributors().get(0).getQtdCommits());
     }
 
     @Test
-    void getUser() {
+    void getUserSuccess() {
         //Arrange
         User user = prepareUser();
         Mockito.when(urlCaller.getObject("user.api.url/"+"user", User.class)).thenReturn(user);
@@ -77,12 +84,25 @@ class IssuesServiceTest {
     }
 
     @Test
-    void getIssues() {
+    void getUserNotFound() {
+        //Arrange
+        Mockito.when(urlCaller.getObject("user.api.url/"+"user", User.class))
+                .thenThrow(new RemoteItemNotFoundException());
+
+        //Act
+        User user = issuesService.getUser("user");
+
+        //Assert
+        assertNull(user);
+    }
+
+
+    @Test
+    void getIssuesSuccess() {
         //Arrange
         String url = "repo.api.url/user/repository/issues";
-        List<Object> objects = new ArrayList<>();
         List<Issue> issues = new ArrayList<>();
-        objects.addAll(issues);
+        List<Object> objects = new ArrayList<>(issues);
         Mockito.when(urlCaller.getList(url, Issue[].class)).thenReturn(objects);
 
         //Act
@@ -94,12 +114,11 @@ class IssuesServiceTest {
     }
 
     @Test
-    void getContributors() {
+    void getContributorsSuccess() {
         //Arrange
         String url = "repo.api.url/user/repository/issues";
-        List<Object> objects = new ArrayList<>();
         List<Contributor> contributors = new ArrayList<>();
-        objects.addAll(contributors);
+        List<Object> objects = new ArrayList<>(contributors);
         Mockito.when(urlCaller.getList(url, Contributor[].class)).thenReturn(objects);
 
         //Act

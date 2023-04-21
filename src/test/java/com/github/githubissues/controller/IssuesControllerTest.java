@@ -1,5 +1,7 @@
 package com.github.githubissues.controller;
 
+import com.github.githubissues.dto.RepositoryDto;
+import com.github.githubissues.dto.ReturnMessageDto;
 import com.github.githubissues.service.IssuesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,32 +32,29 @@ class IssuesControllerTest {
     @Test
     void getRepositorySuccess() {
         //Arrange
-        ResponseEntity response = new ResponseEntity(HttpStatus.OK);
-        Mockito.when(issuesService.getRepository("user", "repo"))
-                .thenReturn(response);
+        RepositoryDto dto = new RepositoryDto();
+        Mockito.when(issuesService.getRepositoryDto("user", "repo"))
+                .thenReturn(dto);
 
         //Act
-        var responseEntity = issuesController.getRepository("user", "repo");
-        var result = responseEntity.getBody();
+        var response = issuesController.getRepository("user", "repo");
 
         //Assert
-        assertEquals(ResponseEntity.ok().build().getStatusCode(), responseEntity.getStatusCode());
-        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(ResponseEntity.ok().build().getStatusCode(), response.getStatusCode());
     }
 
     @Test
-    void getRepositoryError() {
+    void getRepositoryErrorNotFound() {
         //Arrange
-        ResponseEntity response = new ResponseEntity(HttpStatus.BAD_REQUEST);
-        Mockito.when(issuesService.getRepository("user", "repo"))
-                .thenReturn(response);
+        Mockito.when(issuesService.getRepositoryDto("user", "repo"))
+                .thenReturn(null);
 
         //Act
-        var responseEntity = issuesController.getRepository("user", "repo");
-        var result = responseEntity.getBody();
+        var response = issuesController.getRepository("user", "repo");
 
         //Assert
-        assertEquals(ResponseEntity.badRequest().build().getStatusCode(), responseEntity.getStatusCode());
-        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(ResponseEntity.badRequest().build().getStatusCode(), response.getStatusCode());
     }
 }
