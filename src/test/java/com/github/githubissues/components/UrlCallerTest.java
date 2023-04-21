@@ -1,17 +1,13 @@
 package com.github.githubissues.components;
 
 import com.github.githubissues.dto.RepositoryDto;
-import com.github.githubissues.exceptions.RemoteItemNotFoundException;
 import com.github.githubissues.model.*;
-import org.hamcrest.core.Is;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -51,18 +47,16 @@ class UrlCallerTest {
     @Test
     void getObjectNotFound() {
         //Arrange
-        ResponseEntity response = new ResponseEntity(HttpStatus.NOT_FOUND);
+        Object returned;
+        ResponseEntity expected = new ResponseEntity(HttpStatus.NOT_FOUND);
         Mockito.when(restTemplate.getForEntity("wrong_url", User.class))
-                .thenReturn(response);
+                .thenReturn(expected);
 
         //Act
-        try{
-            urlCaller.getList("wrong_url", User.class);
-        }catch (Exception e){
+        returned = urlCaller.getObject("wrong_url", User.class);
 
         //Assert
-            assertInstanceOf(e.getClass(), new RemoteItemNotFoundException());
-        }
+        assertNull(returned);
     }
 
     @Test
@@ -84,18 +78,17 @@ class UrlCallerTest {
     @Test
     void getListNotFound() {
         //Arrange
+        List<Object> objects;
         ResponseEntity response = new ResponseEntity(HttpStatus.NOT_FOUND);
         Mockito.when(restTemplate.getForEntity("wrong_url", Issue[].class))
                 .thenReturn(response);
 
         //Act
-        try{
-            urlCaller.getList("wrong_url", Issue[].class);
-        }catch (Exception e){
+        objects = urlCaller.getList("wrong_url", Issue[].class);
 
         //Assert
-            assertInstanceOf(e.getClass(), new RemoteItemNotFoundException());
-        }
+        assertNull(objects);
+
     }
 
 
@@ -120,11 +113,7 @@ class UrlCallerTest {
                 .thenReturn(response);
 
         //Act
-        try{
-            urlCaller.post("url", dto);
-        }catch (Exception e){
-            assertInstanceOf(e.getClass(), new RemoteItemNotFoundException());
-        }
+        urlCaller.post("url", dto);
     }
 
     protected User prepareUser(){

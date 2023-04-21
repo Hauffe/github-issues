@@ -4,21 +4,18 @@ import com.github.githubissues.builders.RepositoryBuilder;
 import com.github.githubissues.components.IssuesTasks;
 import com.github.githubissues.components.UrlCaller;
 import com.github.githubissues.dto.RepositoryDto;
-import com.github.githubissues.dto.ReturnMessageDto;
-import com.github.githubissues.exceptions.RemoteItemNotFoundException;
 import com.github.githubissues.model.Contributor;
 import com.github.githubissues.model.Issue;
 import com.github.githubissues.model.User;
+import com.github.githubissues.model.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -58,7 +55,8 @@ public class IssuesService {
     public RepositoryDto getRepositoryDto(String userId, String repositoryName){
         RepositoryDto dto;
         User user = getUser(userId);
-        if(user != null){
+        Repository repository = getRepository(userId, repositoryName);
+        if(user != null && repository != null){
             List<Issue> issues = getIssues(userId, repositoryName);
             List<Contributor> contributors = getContributors(userId, repositoryName);
             builder.setUser(user);
@@ -75,17 +73,32 @@ public class IssuesService {
 
     public User getUser(String userId){
         String url = gitUser+userId;
-        User user = null;
+        User user;
         try{
             user = (User)urlCaller.getObject(url, User.class);
-        }catch (Exception e){
+        }catch (HttpClientErrorException e){
             logger.error(e.getMessage());
+            user = null;
         }
         return user;
     }
 
+    public Repository getRepository(String userId, String repositoryName){
+        Repository repository;
+        String url = gitRepo+userId +
+                "/" +
+                repositoryName;
+        try{
+            repository = (Repository) urlCaller.getObject(url, Repository.class);
+        }catch (HttpClientErrorException e){
+            logger.error(e.getMessage());
+            repository = null;
+        }
+        return repository;
+    }
+
     public List<Issue> getIssues(String userId, String repository){
-        List<Issue> issues = new ArrayList<>();
+        List<Issue> issues;
         String url = gitRepo+userId +
                 "/" +
                 repository +
@@ -93,14 +106,15 @@ public class IssuesService {
         try{
             Object obj = urlCaller.getList(url, Issue[].class);
             issues = (List<Issue>)obj;
-        }catch (Exception e){
+        }catch (HttpClientErrorException e){
             logger.error(e.getMessage());
+            issues = null;
         }
         return issues;
     }
 
     public List<Contributor> getContributors(String userId, String repository){
-        List<Contributor> contributors = new ArrayList<>();
+        List<Contributor> contributors;
         String url = gitRepo+userId +
                 "/" +
                 repository +
@@ -108,9 +122,11 @@ public class IssuesService {
         try {
             Object obj = urlCaller.getList(url, Contributor[].class);
             contributors = (List<Contributor>)obj;
-        }catch (Exception e){
+        }catch (HttpClientErrorException e){
             logger.error(e.getMessage());
+            contributors = null;
         }
         return contributors;
     }
+
 }

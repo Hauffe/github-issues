@@ -14,12 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class Repository {
-    @JsonAlias("user_id")
-    private String user;
 
-    @JsonAlias("repository")
-    private String repositoryName;
-    private List<Issue> issues;
-    private List<Contributor> contributors;
+    private String name;
+    @JsonAlias("full_name")
+    private String fullName;
+    private User owner;
 
 }

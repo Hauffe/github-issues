@@ -38,7 +38,9 @@ class RepositoryBuilderTest {
     @Test
     void buildRepositoryDtoSuccess() {
         //Arrange
-        Repository repository = prepateRepository();
+        User user = prepareUser();
+        List<Issue> issues = prepareIssues();
+        List<Contributor> contributors = prepareContributor();
         Mockito.when(urlCaller.getObject("url", User.class))
                 .thenReturn(prepareUser());
 
@@ -50,9 +52,9 @@ class RepositoryBuilderTest {
 
         //Assert
         assertNotNull(dto);
-        assertEquals(repository.getUser(), dto.getUser());
-        assertEquals(repository.getIssues().get(0).getTitle(), dto.getIssues().get(0).getTitle());
-        assertEquals(repository.getContributors().get(0).getQtdCommits(), dto.getContributors().get(0).getQtdCommits());
+        assertEquals(user.getName(), dto.getUser());
+        assertEquals(issues.get(0).getTitle(), dto.getIssues().get(0).getTitle());
+        assertEquals(contributors.get(0).getQtdCommits(), dto.getContributors().get(0).getQtdCommits());
     }
 
     protected User prepareUser(){
@@ -71,9 +73,5 @@ class RepositoryBuilderTest {
         List<Contributor> contributors = new ArrayList<>();
         contributors.add(new Contributor("login", "url", 10));
         return contributors;
-    }
-
-    protected Repository prepateRepository(){
-        return new Repository("name", "repo", prepareIssues(), prepareContributor());
     }
 }

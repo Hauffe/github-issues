@@ -3,21 +3,16 @@ package com.github.githubissues.service;
 import com.github.githubissues.builders.RepositoryBuilder;
 import com.github.githubissues.components.IssuesTasks;
 import com.github.githubissues.components.UrlCaller;
-import com.github.githubissues.controller.IssuesController;
 import com.github.githubissues.dto.RepositoryDto;
-import com.github.githubissues.exceptions.RemoteItemNotFoundException;
 import com.github.githubissues.model.*;
-import org.hamcrest.core.Is;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,16 +39,19 @@ class IssuesServiceTest {
     }
 
     @Test
-    void getRepositorySuccess() {
+    void getRepositoryDtoSuccess() {
         //Arrange
         ReflectionTestUtils.setField(issuesService, "builder", new RepositoryBuilder(urlCaller));
         User user = prepareUser();
+        Repository repository = prepareRepository();
         List<Issue> issues = prepareIssues();
         List<Contributor> contributors = prepareContributor();
         Mockito.when(urlCaller.getObject("url", User.class))
                 .thenReturn(user);
         Mockito.when(issuesService.getUser("user"))
                 .thenReturn(user);
+        Mockito.when(issuesService.getRepository("user", "repo"))
+                .thenReturn(repository);
         Mockito.when(issuesService.getIssues("user", "repo"))
                 .thenReturn(issues);
         Mockito.when(issuesService.getContributors("user", "repo"))
@@ -68,6 +66,7 @@ class IssuesServiceTest {
         assertEquals(issues.get(0).getTitle(), response.getIssues().get(0).getTitle());
         assertEquals(contributors.get(0).getQtdCommits(), response.getContributors().get(0).getQtdCommits());
     }
+
 
     @Test
     void getUserSuccess() {
@@ -87,13 +86,41 @@ class IssuesServiceTest {
     void getUserNotFound() {
         //Arrange
         Mockito.when(urlCaller.getObject("user.api.url/"+"user", User.class))
-                .thenThrow(new RemoteItemNotFoundException());
+                .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
         //Act
         User user = issuesService.getUser("user");
 
         //Assert
         assertNull(user);
+    }
+
+    @Test
+    void getRepositorySuccess() {
+        //Arrange
+        Repository repo = prepareRepository();
+        Mockito.when(urlCaller.getObject("repo.api.url/user/repo", Repository.class))
+                .thenReturn(repo);
+
+        //Act
+        var response = issuesService.getRepository("user", "repo");
+
+        //Assert
+        assertNotNull(response);
+        assertEquals(response, repo);
+    }
+
+    @Test
+    void getRepositoryNotFound() {
+        //Arrange
+        Mockito.when(urlCaller.getObject("repo.api.url/user/repo", Repository.class))
+                .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+
+        //Act
+        var response = issuesService.getRepository("user", "repo");
+
+        //Assert
+        assertNull(response);
     }
 
 
@@ -111,6 +138,20 @@ class IssuesServiceTest {
         //Assert
         assertNotNull(response);
         assertEquals(response, issues);
+    }
+
+    @Test
+    void getIssuesNotFound() {
+        //Arrange
+        String url = "repo.api.url/user/repository/issues";
+        Mockito.when(urlCaller.getList(url, Issue[].class))
+                .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
+
+        //Act
+        List<Issue> response = issuesService.getIssues("user", "repository");
+
+        //Assert
+        assertNull(response);
     }
 
     @Test
@@ -133,6 +174,9 @@ class IssuesServiceTest {
     protected User prepareUser(){
         return new User("login", "name", "url");
     }
+    private Repository prepareRepository() {
+        return new Repository("repo", "name/repo", prepareUser());
+    }
 
     protected List<Issue> prepareIssues(){
         List<Issue> issues = new ArrayList<>();
@@ -146,9 +190,5 @@ class IssuesServiceTest {
         List<Contributor> contributors = new ArrayList<>();
         contributors.add(new Contributor("login", "url", 10));
         return contributors;
-    }
-
-    protected Repository prepateRepository(){
-        return new Repository("user", "repo", prepareIssues(), prepareContributor());
     }
 }

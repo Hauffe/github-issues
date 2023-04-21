@@ -42,7 +42,7 @@ public class IssuesController {
                 .map(record -> ResponseEntity.status(HttpStatus.OK).body(
                         new ReturnMessageDto(true, "Request sent", new Date()))
                 ).orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        new ReturnMessageDto(false, userId + " not found", null))
+                        new ReturnMessageDto(false, userId + "/" + repositoryName + " not found", null))
                 );
     }
 }

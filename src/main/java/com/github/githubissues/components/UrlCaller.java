@@ -1,6 +1,5 @@
 package com.github.githubissues.components;
 
-import com.github.githubissues.exceptions.RemoteItemNotFoundException;
 import com.github.githubissues.service.IssuesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -26,38 +24,30 @@ public class UrlCaller {
     }
 
 
-    public Object getObject(String url, Class className) throws RemoteItemNotFoundException{
-        Object object = new Object();
+    public Object getObject(String url, Class className){
+        Object object;
         logger.info("Calling - " + url);
         ResponseEntity response = restTemplate.getForEntity(url, className);
-        if(validateReturn(response))
-            object = response.getBody();
+        object = response.getBody();
         return object;
     }
 
-    public List<Object> getList(String url, Class className) throws RemoteItemNotFoundException{
-        List<Object> objectList = new ArrayList<>();
+    public List<Object> getList(String url, Class className){
+        List<Object> objectList = null;
         logger.info("Calling - " + url);
         ResponseEntity<Object[]> response = restTemplate.getForEntity(url, className);
-        if(validateReturn(response))
+        if(response.getBody() != null)
             objectList = List.of(response.getBody());
         return objectList;
     }
 
-    public void post(String url, Object object) throws RemoteItemNotFoundException{
+    public void post(String url, Object object){
         logger.info("POST to - " + url);
         ResponseEntity response = restTemplate.postForEntity(url, object, String.class);
-        if(validateReturn(response))
+        if(response.getStatusCode().equals(HttpStatus.OK)){
             logger.info("Success POST to: " + url);
-    }
-
-    public boolean validateReturn(ResponseEntity response) throws RemoteItemNotFoundException{
-        if(HttpStatus.NOT_FOUND.equals(response.getStatusCode())){
-            throw new RemoteItemNotFoundException("No item found from remote API: " + response);
+        }else{
+            logger.error("Fail to POST to: " + url + " returned " + response);
         }
-        if(!HttpStatus.OK.equals(response.getStatusCode())){
-            throw new RuntimeException("Unable to POST or GET values: " + response);
-        }
-        return true;
     }
 }
