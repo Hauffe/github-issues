@@ -8,4 +8,4 @@ app:
   git_repo: "https://api.github.com/repos/"
   git_token: "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"
   webhook: "https://webhook.site/06f5fc92-bcb7-4a37-9b7c-d86742bb44f4"
-  timeToPush: 86400
+  timeToPush: 30

@@ -44,7 +44,7 @@ public class RepositoryBuilder implements Builder{
 
     @Override
     public void setContributors(List<Contributor> contributors) {
-        this.contributors.clear();
+        this.contributors = new ArrayList<>();
         contributors.forEach(contributor -> {
             User user = (User) urlCaller.getObject(contributor.getUrl(), User.class);
             this.contributors.add(
@@ -59,7 +59,7 @@ public class RepositoryBuilder implements Builder{
 
     @Override
     public void setIssues(List<Issue> issues) {
-        this.issues.clear();
+        this.issues = new ArrayList<>();
         issues.forEach(issue -> {
             this.issues.add(
                     new IssueDto(
