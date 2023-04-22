@@ -8,8 +8,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -25,6 +28,9 @@ class UrlCallerTest {
     @Mock
     private RestTemplate restTemplate;
 
+    @Mock
+    private MultiValueMap<String, String> headers;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -34,7 +40,7 @@ class UrlCallerTest {
     void getObjectSuccess() {
         //Arrange
         ResponseEntity expected = new ResponseEntity(prepareUser(), HttpStatus.OK);
-        Mockito.when(restTemplate.getForEntity("url", User.class))
+        Mockito.when(restTemplate.exchange("url", HttpMethod.GET, new HttpEntity<>(headers), User.class))
                 .thenReturn(expected);
 
         //Act
@@ -49,7 +55,7 @@ class UrlCallerTest {
         //Arrange
         Object returned;
         ResponseEntity expected = new ResponseEntity(HttpStatus.NOT_FOUND);
-        Mockito.when(restTemplate.getForEntity("wrong_url", User.class))
+        Mockito.when(restTemplate.exchange("wrong_url", HttpMethod.GET, new HttpEntity<>(headers), User.class))
                 .thenReturn(expected);
 
         //Act
@@ -64,7 +70,7 @@ class UrlCallerTest {
         //Arrange
         List<Issue> expected = prepareIssues();
         ResponseEntity response = new ResponseEntity(expected.toArray(), HttpStatus.OK);
-        Mockito.when(restTemplate.getForEntity("url", Issue[].class))
+        Mockito.when(restTemplate.exchange("url", HttpMethod.GET, new HttpEntity<>(headers), Issue[].class))
                 .thenReturn(response);
 
         //Act
@@ -80,7 +86,7 @@ class UrlCallerTest {
         //Arrange
         List<Object> objects;
         ResponseEntity response = new ResponseEntity(HttpStatus.NOT_FOUND);
-        Mockito.when(restTemplate.getForEntity("wrong_url", Issue[].class))
+        Mockito.when(restTemplate.exchange("wrong_url", HttpMethod.GET, new HttpEntity<>(headers), Issue[].class))
                 .thenReturn(response);
 
         //Act
