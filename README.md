@@ -13,9 +13,9 @@ Maven build:
         mvn clean
         mvn install
 
-To run the integration tests alone, please run:
+To run the integration, please run:
 
-        mvn verify
+        mvn install -DskipITs=false
 
 Go to the `\github-issues\target` directory and find the `github-issues-0.0.1-SNAPSHOT.jar` file built, then run:
 
