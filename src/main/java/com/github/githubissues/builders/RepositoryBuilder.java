@@ -27,9 +27,6 @@ public class RepositoryBuilder implements Builder{
     @Autowired
     public RepositoryBuilder(UrlCaller urlCaller) {
         this.urlCaller = urlCaller;
-        this.issues = new ArrayList<>();
-        this.contributors = new ArrayList<>();
-
     }
 
     @Override
