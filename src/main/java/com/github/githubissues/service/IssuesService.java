@@ -92,9 +92,6 @@ public class IssuesService {
         }catch (HttpClientErrorException e){
             logger.error(e.getMessage());
             repository = null;
-        }catch (Exception e){
-            logger.error(e.getMessage());
-            repository = null;
         }
         return repository;
     }
