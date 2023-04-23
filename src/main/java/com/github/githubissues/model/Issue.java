@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class Issue {
+
     private String title;
     private User user;
     private List<Label> labels;

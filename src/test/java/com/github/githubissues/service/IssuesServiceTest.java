@@ -181,7 +181,7 @@ class IssuesServiceTest {
     protected List<Issue> prepareIssues(){
         List<Issue> issues = new ArrayList<>();
         List<Label> labels = new ArrayList<>();
-        labels.add(new Label(1, "bug"));
+        labels.add(new Label(1L, "bug"));
         issues.add(new Issue("title", prepareUser(), labels));
         return issues;
     }

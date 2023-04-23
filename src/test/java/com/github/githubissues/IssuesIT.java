@@ -48,4 +48,17 @@ public class IssuesIT {
         //Assert
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
+
+    @Test
+    @Order(3)
+    void dependabot() {
+        //Arrange
+
+        //Act
+        final ResponseEntity<String> response =
+                testRestTemplate.getForEntity("/issues/Hauffe/BusNews", String.class);
+
+        //Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
 }

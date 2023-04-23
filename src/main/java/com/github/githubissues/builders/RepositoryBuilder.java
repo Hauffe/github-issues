@@ -8,8 +8,12 @@ import com.github.githubissues.model.Contributor;
 import com.github.githubissues.model.Issue;
 import com.github.githubissues.model.Label;
 import com.github.githubissues.model.User;
+import com.github.githubissues.service.IssuesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,8 @@ public class RepositoryBuilder implements Builder{
     private List<IssueDto> issues;
     private List<ContributorDto> contributors;
     private UrlCaller urlCaller;
+
+    private static final Logger logger = LoggerFactory.getLogger(IssuesService.class);
 
     @Autowired
     public RepositoryBuilder(UrlCaller urlCaller) {
@@ -43,7 +49,13 @@ public class RepositoryBuilder implements Builder{
     public void setContributors(List<Contributor> contributors) {
         this.contributors = new ArrayList<>();
         contributors.forEach(contributor -> {
-            User user = (User) urlCaller.getObject(contributor.getUrl(), User.class);
+            User user = new User();
+            try {
+                user = (User) urlCaller.getObject(contributor.getUrl(), User.class);
+            }catch (HttpClientErrorException e){
+                logger.info(e.getMessage());
+                user.setName("Not found");
+            }
             this.contributors.add(
                     new ContributorDto(
                             user.getName(),

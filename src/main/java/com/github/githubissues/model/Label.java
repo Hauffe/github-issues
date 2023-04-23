@@ -12,6 +12,6 @@ import lombok.*;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class Label {
-    public Integer id;
+    public Long id;
     public String name;
 }

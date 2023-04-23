@@ -16,17 +16,5 @@ public class GithubIssuesApplication {
         SpringApplication.run(GithubIssuesApplication.class, args);
     }
 
-    @Bean
-    public Executor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        // max numbers of requests
-        executor.setCorePoolSize(4);
-        executor.setMaxPoolSize(4);
-        // Queue capacity
-        executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("Webhoook-");
-        executor.initialize();
-        return executor;
-    }
 
 }
