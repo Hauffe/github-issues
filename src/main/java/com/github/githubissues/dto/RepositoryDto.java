@@ -19,7 +19,6 @@ import java.util.List;
 public class RepositoryDto {
 
     private String user;
-
     @JsonProperty("repository")
     private String repositoryName;
     private List<IssueDto> issues;

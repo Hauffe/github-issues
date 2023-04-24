@@ -41,7 +41,6 @@ class IssuesServiceTest {
     @Test
     void getRepositoryDtoSuccess() {
         //Arrange
-        ReflectionTestUtils.setField(issuesService, "builder", new RepositoryBuilder(urlCaller));
         User user = prepareUser();
         Repository repository = prepareRepository();
         List<Issue> issues = prepareIssues();

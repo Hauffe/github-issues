@@ -30,16 +30,12 @@ public class IssuesService {
 
     private UrlCaller urlCaller;
 
-    private RepositoryBuilder builder;
-
     private static final Logger logger = LoggerFactory.getLogger(IssuesService.class);
 
     @Autowired
-    public IssuesService(UrlCaller urlCaller, IssuesTasks tasks, RepositoryBuilder builder) {
+    public IssuesService(UrlCaller urlCaller, IssuesTasks tasks) {
         this.tasks = tasks;
         this.urlCaller = urlCaller;
-        this.builder = builder;
-
     }
 
     public void createResponse(RepositoryDto dto){
@@ -52,6 +48,7 @@ public class IssuesService {
 
 
     public RepositoryDto getRepositoryDto(String userId, String repositoryName){
+        RepositoryBuilder builder = new RepositoryBuilder(urlCaller);
         RepositoryDto dto;
         User user = getUser(userId);
         Repository repository = getRepository(userId, repositoryName);

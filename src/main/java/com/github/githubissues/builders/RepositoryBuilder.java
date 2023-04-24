@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+
 public class RepositoryBuilder implements Builder{
 
     private String user;
@@ -30,7 +30,6 @@ public class RepositoryBuilder implements Builder{
 
     private static final Logger logger = LoggerFactory.getLogger(IssuesService.class);
 
-    @Autowired
     public RepositoryBuilder(UrlCaller urlCaller) {
         this.urlCaller = urlCaller;
     }
