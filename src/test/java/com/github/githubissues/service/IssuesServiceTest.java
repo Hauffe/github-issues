@@ -28,9 +28,6 @@ class IssuesServiceTest {
     @Mock
     private IssuesTasks tasks;
 
-    @Mock
-    private RepositoryBuilder builder;
-
     @BeforeEach
     void setUpEach() {
         MockitoAnnotations.openMocks(this);
