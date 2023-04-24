@@ -66,8 +66,18 @@ There is one endpoint responsible for scheduling a POST to a remote api represen
             ] 
           }
 
+### application.yml:
+* #####   git_user
+  * URI for getting user information from GitHub api
+* #####   git_repo
+  * URI for getting repository information from GitHub api
+* #####   git_token
+  * Token to authenticate with GitHub api
+* #####   webhook
+  * webhook.site URI to post information
 
 # Final considerations
+
 
 This exercise has async and remote request components. Those are the building blocks for developing this solution. I experimented several ways of putting the right code in the right spot and this is the best way I've found for now. 
 Also, the builder pattern was created not for the moment necessity, but for enhancing the maintainability and scalability of the system, to make it easier to add new features in the future.
