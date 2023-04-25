@@ -1,6 +1,7 @@
 package com.github.githubissues.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.githubissues.dto.RepositoryDto;
 import com.github.githubissues.dto.ReturnMessageDto;
 import com.github.githubissues.service.IssuesService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +39,16 @@ public class IssuesController {
             @PathVariable String userId,
             @PathVariable String repositoryName
     ){
-        return Optional.ofNullable(service.getRepositoryDto(userId, repositoryName))
-                .map(record -> ResponseEntity.status(HttpStatus.OK).body(
-                        new ReturnMessageDto(true, "Request sent", new Date()))
-                ).orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        new ReturnMessageDto(false, userId + "/" + repositoryName + " not found", null))
-                );
+        HttpStatus status;
+        ReturnMessageDto message;
+        RepositoryDto dto = service.getRepositoryDto(userId, repositoryName);
+        if(dto != null){
+            message = new ReturnMessageDto(true, "Request sent", new Date());
+            status = HttpStatus.OK;
+        }else {
+            message = new ReturnMessageDto(false, userId + "/" + repositoryName + " not found", null);
+            status = HttpStatus.BAD_REQUEST;
+        }
+        return ResponseEntity.status(status).body(message);
     }
 }

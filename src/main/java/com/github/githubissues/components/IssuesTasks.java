@@ -35,5 +35,4 @@ public class IssuesTasks {
         TimeUnit.SECONDS.sleep(timeToPush);
         urlCaller.post(webhookUrl, repository);
     }
-
 }
